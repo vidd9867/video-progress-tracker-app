@@ -1,0 +1,119 @@
+<div class="main-layout">
+  <div class="video-tracker-container">
+  <div class="video-tracker-card">
+
+
+    <!-- Video Player Section -->
+    <div class="video-section">
+      
+      <!-- Video Container -->
+      <div class="video-container">
+        <video controls
+          #videoPlayer
+          class="video-player"
+          [src]="videoUrl"
+          (timeupdate)="onTimeUpdate(videoCode)"
+          (loadeddata)="onLoadedData(videoCode)"
+          (seeked)="onSeeked()"
+          (play)="onPlay()"
+          (pause)="onPause()"
+          [muted]="true">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
+      <!-- Progress Statistics -->
+      <div class="stats-grid">
+        <div class="stat-card stat-green">
+          <div class="stat-content">
+            <div class="stat-info">
+              <p class="stat-label">Unique Progress</p>
+              <p class="stat-value">{{ videoProgress.progressPercentage | number:'1.1-1' }}%</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card stat-blue">
+          <div class="stat-content">
+            <div class="stat-info">
+              <p class="stat-label">Time Watched</p>
+              <p class="stat-value">{{ formatTime(videoProgress.totalUniqueTime) }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card stat-purple">
+          <div class="stat-content">
+            <div class="stat-info">
+              <p class="stat-label">Segments Watched</p>
+              <p class="stat-value">{{ mergedIntervals.length }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual Progress Indicator -->
+      <div class="progress-section">
+        <div class="progress-header">
+          <h3>Viewing Progress</h3>
+          <span class="progress-detail">
+            {{ videoProgress.totalUniqueTime | number:'1.0-0' }}s / {{ duration | number:'1.0-0' }}s watched
+          </span>
+        </div>
+        
+        <div class="main-progress-bar">
+          <div 
+            class="main-progress-fill"
+            [style.width.%]="Math.min(videoProgress.progressPercentage, 100)">
+          </div>
+          
+          <!-- Current position indicator -->
+          <div 
+            class="position-indicator"
+            [style.left.%]="getPlaybackPercentage()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Watched Intervals Display -->
+      <div class="intervals-section" *ngIf="mergedIntervals.length > 0">
+        <h4>Watched Segments</h4>
+        <div class="intervals-grid">
+          <div 
+            class="interval-chip" 
+            *ngFor="let interval of mergedIntervals; trackBy: trackByInterval">
+            {{ formatTime(interval.start) }} - {{ formatTime(interval.end) }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Instructions -->
+      <!-- <div class="instructions">
+        <h4>How It Works:</h4>
+        <ul>
+          <li>Progress only increases when you watch NEW parts of the video</li>
+          <li>Rewatching the same section won't increase your progress</li>
+          <li>Skipping ahead doesn't count as progress until you actually watch</li>
+          <li>Your position is automatically saved and restored</li>
+        </ul>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<div class="video-playlist-container">
+  <div class="video-playlist-card">
+    <div class="video-playlist">
+      <div class="video-grid" *ngFor="let video of videoData" (click)="selectVideo(video.videoCode, video.path)">
+        <div class="video-item">
+          <video class="video-thumbnail" [src]="video.path" alt="Video Thumbnail" ></video>
+        </div>
+        <div class="video-details">
+          <h3 class="video-title">{{ video.title }}</h3>
+          <p class="video-description">{{ video.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
